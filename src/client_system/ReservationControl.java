@@ -386,17 +386,17 @@ public class ReservationControl {
 					String	sql = "SELECT * FROM db_reservation.reservation WHERE facility_id = '" + facility + "' AND day = '" + rdate + "';";	// @3
 					System.out.println( sql);				// @@@@ デバッグ用SQLをコンソールに表示
 					ResultSet	rs = sqlStmt.executeQuery( sql);				// @1 選択された教室IDと同じレコードを抽出
-					String	classroomName = facility;  //@3教室名を取得
+					String	classroomName = "教室"+facility+"\n";  //@3教室名を取得
 
 					res.add(classroomName);
 					while( rs.next()) {											// @1 1件目のレコードを取得
-						String reservationInfo =  (rs.getString("start_time")).substring( 0,5) + "～ " + (rs.getString("end_time")).substring( 0,5);
+						String reservationInfo =  (rs.getString("start_time")).substring( 0,5) + "~ " + (rs.getString("end_time")).substring( 0,5);
 						res.add(reservationInfo);
 					}
 				// @3 教室名だけが追加された場合
 				if(res.size() == 1) {
 					res.clear();
-					res.add("教室の予約情報がありません．");
+					res.add("予約はありません．");
 				}															// @3
 			} catch( Exception e) {											// @3 例外発生時
 					e.printStackTrace();									// @3 StackTraceをコンソールに表示
