@@ -34,7 +34,6 @@ public class ConfirmDialog extends Dialog implements ActionListener, WindowListe
 	
 	// ボタン
 	Button			buttonOK;					// OKボタン
-	Button			buttonCancel;				// キャンセルボタン
 	
 	public	ConfirmDialog( Frame owner, ReservationControl rc) {
 		// 基底クラスのコンストラクタを呼び出す
@@ -84,7 +83,6 @@ public class ConfirmDialog extends Dialog implements ActionListener, WindowListe
 		addWindowListener( this);
 		// ボタンにアクションリスナを追加
 		buttonOK.addActionListener( this);
-		buttonCancel.addActionListener( this);
 		// 教室選択ボックス，時・分選択ボックスそれぞれに項目Listenerを追加
 		choiceFacility.addItemListener( this);
 		
@@ -93,6 +91,7 @@ public class ConfirmDialog extends Dialog implements ActionListener, WindowListe
 		setResizable( false);
 		
 	}
+	
 	
 
 	
@@ -141,25 +140,21 @@ public class ConfirmDialog extends Dialog implements ActionListener, WindowListe
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
-		if( e.getSource() == buttonCancel) {
-			setVisible( false);
-			dispose();
-		} else if( e.getSource() == buttonOK) {
-			canceled = false;
-			setVisible( false);
-			dispose();
-		}
-	}
-
-
-
-
-	@Override
 	public void itemStateChanged(ItemEvent e) {
 		// TODO 自動生成されたメソッド・スタブ
 		
 	}
 
-			
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		
+		// TODO 自動生成されたメソッド・スタブ
+		if( e.getSource() == buttonOK) {
+			canceled = false;
+			setVisible( false);
+			dispose();
+		}
+		
 	}
+	
+}

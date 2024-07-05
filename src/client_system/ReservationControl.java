@@ -322,17 +322,19 @@ public class ReservationControl {
 		List<String> res = new ArrayList<>();
 																					// @3
 		// @3 予約状況確認画面生成
-		ConfirmDialog	cd = new ConfirmDialog( frame, this);			// @3
-		// @2 新規予約画面を表示
-		cd.setVisible( true);													// @3 予約状況確認画面を表示（ここで制御がcdインスタンスに移る）
-		if( cd.canceled) {														// @3 操作をキャンセルしたとき
-			return	res.toString();												// @3 終了
-		}																		// @3
-			// @3 正常実行したとき
-			// @3 新規予約画面から年月日を取得
+		ConfirmDialog	cd = new ConfirmDialog( frame, this);			// @3	
+		cd.setVisible(true); // @3
+		
+	    if (cd.canceled) {
+	        return res.toString();
+	    }
+		// @3 正常実行したとき
+		// @3 新規予約画面から年月日を取得
 		String	ryear_str	= cd.tfYear.getText();								// @3 入力された年情報をテキストで取得
 		String	rmonth_str	= cd.tfMonth.getText();								// @3 選択された月情報をテキストで取得
 		String	rday_str	= cd.tfDay.getText();								// @3 選択された日情報をテキストで取得
+		
+
 			// @2 月と日が一桁だったら，前に0を付加
 		if( rmonth_str.length() == 1) {											// @3 月の文字数が1桁の時
 				rmonth_str = "0" + rmonth_str;									// @3 　月の先頭に"0"を付加
@@ -351,11 +353,11 @@ public class ReservationControl {
 			String	convData = sd.format( sd.parse( inData));					// @3 入力日付をSimpleDateFormat形式に変換
 			if( !inData.equals( convData)) {									// @3 2つの文字列が等しくない時．
 				res.add("日付の書式を修正して下さい（年：西暦4桁，月：1～12，日：1～31(各月月末まで))");	// @3 エラー文を設定し，新規予約終了
-				return	res.toString();													// @3
+				return	String.join("\n", res);													// @3
 			}																	// @3
 		} catch( ParseException p) {											// @3 年月日の文字が誤っていてSimpleDateFormatに変換不可の時
 				res.add("日付の値を修正して下さい");									// @3 数字以外，入力されていないことを想定したエラー処理
-				return	res.toString();														// @3
+				return	String.join("\n", res);														// @3
 			}																		// @3
 																					// @3
 		// @3 入力された日付が現時点より後であるかのチェック
@@ -384,25 +386,28 @@ public class ReservationControl {
 					String	sql = "SELECT * FROM db_reservation.reservation WHERE facility_id = '" + facility + "' AND day = '" + rdate + "';";	// @3
 					System.out.println( sql);				// @@@@ デバッグ用SQLをコンソールに表示
 					ResultSet	rs = sqlStmt.executeQuery( sql);				// @1 選択された教室IDと同じレコードを抽出
+					String	classroomName = facility;  //@3教室名を取得
+
+					res.add(classroomName);
 					while( rs.next()) {											// @1 1件目のレコードを取得
-						String reservationInfo = "Facility: " + rs.getString("facility_id") + ", Date: " + rs.getString("day")
-							+ ", Start Time: " + rs.getString("start_time") + ", End Time: " + rs.getString("end_time");
-						res.add(reservationInfo);	 
-				}
-				// @3 該当するレコードが無い場合
-				if(res.isEmpty()) {
-					res.add("教室の予約情報がありません．");				// @3 結果表示エリアに表示する文言をセット
+						String reservationInfo =  (rs.getString("start_time")).substring( 0,5) + "～ " + (rs.getString("end_time")).substring( 0,5);
+						res.add(reservationInfo);
+					}
+				// @3 教室名だけが追加された場合
+				if(res.size() == 1) {
+					res.clear();
+					res.add("教室の予約情報がありません．");
 				}															// @3
-			} catch( Exception e) {											// @1 例外発生時
-					e.printStackTrace();										// @1 StackTraceをコンソールに表示
+			} catch( Exception e) {											// @3 例外発生時
+					e.printStackTrace();									// @3 StackTraceをコンソールに表示
 			}																// @3
-			closeDB();														// @2 MySQLとの接続を切る	
+			closeDB();														// @3 MySQLとの接続を切る	
 			// @3 予約日が当日かそれより前だった場合
 		}else {
 			res.add("入力日時が無効です");
-			return res.toString();
-		}																// @2		
-		return res.toString();	// @3																		// @2											// @2
-	}																			// @2
-																	// @2
+			return String.join("\n", res);
+		}									
+		return String.join("\n", res);	// @3
+	}								
+																	
 }
