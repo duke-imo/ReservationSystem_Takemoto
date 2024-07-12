@@ -1,4 +1,4 @@
-package client_system;
+package reservation_system;
 
 import java.awt.BorderLayout;
 import java.awt.Button;

@@ -1,4 +1,4 @@
-package client_system;
+package reservation_system;
 
 import java.awt.BorderLayout;
 import java.awt.Button;
@@ -26,7 +26,8 @@ public class MainFrame extends Frame implements ActionListener, WindowListener{
 	Button	buttonLog;											// ログイン・ログアウトボタン
 	Button	buttonExplanation;									// @1 教室概要ボタン
 	Button	buttonReservation;									// @2 新規予約ボタン
-	Button	buttonConfirm;//@3新規予約ボタン（追加時構造設計クラス図未定義）
+	Button	buttonConfirm;										//@3新規予約ボタン（追加時構造設計クラス図未定義）
+	Button  buttonSelfConfirm;									// @4 自己予約確認ボタン
 	// @1 コンボボックスのインスタンス生成
 	ChoiceFacility	choiceFacility;								// @1 教室選択用コンボボックス
 	// テキストフィールドのインスタンス生成
@@ -42,8 +43,9 @@ public class MainFrame extends Frame implements ActionListener, WindowListener{
 		buttonLog = new Button( " ログイン ");					// ログインボタン
 		buttonExplanation = new Button( "教室概要");			// @1 教室選択ボタン
 		buttonReservation = new Button( "新規予約");			// @2 新規予約ボタン
-		buttonConfirm	= new Button("教室予約状況確認");// @3 教室予約状況確認
-																// @1
+		buttonConfirm	= new Button("教室予約状況確認");		// @3 教室予約状況確認
+		buttonSelfConfirm = new Button( "自己予約確認");		// @4 自己予約確認ボタン
+		// @1
 		// @1 教室選択用コンボボックスの生成
 		List<String> facilityId = new ArrayList<String>();		// @1 全てのfacilityIDを入れるリスト
 		facilityId 		= rc.getFacilityId();					// @1 全facilityIDを読出し，リストに入れる
@@ -97,6 +99,7 @@ public class MainFrame extends Frame implements ActionListener, WindowListener{
 		// @2 下部パネルに部品を配置
 		panelSouth = new Panel();								// @2下部パネルインスタンスを生成
 		panelSouth.add( buttonReservation);						// @2 新規予約ボタンを付加
+		panelSouth.add( buttonSelfConfirm);						// @4 自己予約確認ボタン
 		// @2 MainFrameに下部パネルを追加
 		add( panelSouth, BorderLayout.SOUTH);
 		
@@ -105,6 +108,7 @@ public class MainFrame extends Frame implements ActionListener, WindowListener{
 		buttonExplanation.addActionListener( this);				// @1 ActionListenerに教室概要ボタンを追加
 		buttonReservation.addActionListener( this);				// @2 ActionListenerに新規予約ボタンを追加
 		buttonConfirm.addActionListener(this);					// @3ActionListenerにButtonConfirmを追加
+		buttonSelfConfirm.addActionListener( this);				// @4
 		addWindowListener( this);								// WindowListenerを追加
 	}
 
@@ -162,8 +166,10 @@ public class MainFrame extends Frame implements ActionListener, WindowListener{
 		// @2 押下ボタンが新規予約ボタンの時，makeReservationメソッドを実行
 		} else if( e.getSource() == buttonReservation) {		// @2
 			result = reservationControl.makeReservation( this);	// @2
-		} else if( e.getSource() == buttonConfirm) {// @3
-			result = reservationControl.makeConfirm( this);	// @2
+		} else if( e.getSource() == buttonConfirm) {			// @3
+			result = reservationControl.makeConfirm( this);		// @3
+		} else if( e.getSource() == buttonSelfConfirm) {		// @4
+			result = reservationControl.getSelfConfirm( this);	// @4
 		}
 		textMessage.setText( result);							// メソッドの戻り値をテキストエリアに表示
 	}

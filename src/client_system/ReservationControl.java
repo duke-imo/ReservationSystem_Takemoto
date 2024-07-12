@@ -1,4 +1,4 @@
-package client_system;
+package reservation_system;
 
 import java.awt.Dialog;
 import java.sql.Connection;
@@ -408,6 +408,51 @@ public class ReservationControl {
 			return String.join("\n", res);
 		}									
 		return String.join("\n", res);	// @3
-	}								
+	}
+	
+	////  @4 自己予約機能のボタン押下の処理を行うメソッド
+	public String getSelfConfirm( MainFrame frame){							// @4
+		List<String> resList = new ArrayList<>();     						// @4 戻り値変数の初期化
+		String facility = "";    		 									// @4 教室番号
+		String day = "";     												// @4 予約日
+		String startTime = "";  											// @4 予約開始時間
+		String endTime = "";  												// @4 予約終了時間
+		String reservationId = "";  										// @4 予約ID
+		
+		
+		try {																
+			if( flagLogin) {												// @4 ログイン状態時にのみ実行
+				connectDB();  												// @4 MySQLに接続
+				// facility_id, day, start_time, end_time
+				String sql = "SELECT * FROM db_reservation.reservation WHERE user_id = '" + reservationUserID + "';" ;
+				ResultSet	rs = sqlStmt.executeQuery( sql);
+				System.out.println( sql);									// @4 デバッグ用SQLをコンソールに表示
+				while( rs.next()) {											// @4 次に取得データがある場合に限り実行
+					facility    = rs.getString( "facility_id");				// @4 教室番号
+					day         = rs.getString( "day");				  		// @4 日付
+					startTime	= rs.getString( "start_time");				// @4 予約開始時間
+					endTime	    = rs.getString( "end_time");			    // @4 予約終了時間
+					reservationId = rs.getString("reservation_id");			// @4 予約ID
+					// @4 表示データの作成
+					String reservationInfo = facility +"  "+ "予約日："+ day +"  "+"予約時間："+ startTime.substring( 0,5) + " ～ " + endTime.substring( 0,5) +"  "+"ID："+ reservationId; 
+					resList.add(reservationInfo);							// @4 リストに予約データ(str)格納
+				} if (resList.isEmpty()) {                                  // @4 予約がない場合のエラー処理
+	                resList.add("予約はありません");
+	            }
+			}else {															// @4 未ログイン状態のエラー処理
+				resList.add("ログインして下さい");
+			}
+		}catch( Exception e){												// @4 例外発生時のエラー処理
+			e.printStackTrace();
+		}
+		closeDB();															// @4 MySQLとの接続を切る
+		
+	    StringBuilder result = new StringBuilder();						// @4 リストの内容を一つの文字列に結合してクライアントに返す
+	    for (String res : resList) {
+	        result.append(res).append("\n"); 								// @4  各予約情報の末尾に改行(\n)を入れる
+	    }
+
+	    return result.toString();
+	}
 																	
 }
