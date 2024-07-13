@@ -1,5 +1,5 @@
 // @1（ファイル全体）
-package client_system;
+package reservation_system;
 
 import java.awt.Choice;
 import	java.util.List;

@@ -1,4 +1,4 @@
-package client_system;
+package reservation_system;
 
 public class ReservationSystem {
 	public	static	void	main( String argv[]) {

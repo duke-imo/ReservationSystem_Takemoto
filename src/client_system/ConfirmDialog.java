@@ -1,5 +1,5 @@
 // @3 予約状況確認機能で新たに追加したクラス
-package client_system;
+package reservation_system;
 
 
 import java.awt.BorderLayout;
