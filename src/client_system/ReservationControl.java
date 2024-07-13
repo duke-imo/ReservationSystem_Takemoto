@@ -326,8 +326,9 @@ public class ReservationControl {
 		cd.setVisible(true); // @3
 		
 	    if (cd.canceled) {
-	        return res.toString();
+	    	return String.join("\n", res);	    
 	    }
+	    
 		// @3 正常実行したとき
 		// @3 新規予約画面から年月日を取得
 		String	ryear_str	= cd.tfYear.getText();								// @3 入力された年情報をテキストで取得
@@ -453,6 +454,5 @@ public class ReservationControl {
 	    }
 
 	    return result.toString();
-	}
-																	
+	}													
 }
