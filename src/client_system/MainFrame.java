@@ -1,4 +1,4 @@
-package reservation_system;
+package client_system;
 
 import java.awt.BorderLayout;
 import java.awt.Button;
@@ -28,6 +28,7 @@ public class MainFrame extends Frame implements ActionListener, WindowListener{
 	Button	buttonReservation;									// @2 新規予約ボタン
 	Button	buttonConfirm;										//@3新規予約ボタン（追加時構造設計クラス図未定義）
 	Button  buttonSelfConfirm;									// @4 自己予約確認ボタン
+	Button	buttonReservationCancel;							//@5 予約キャンセルボタン
 	// @1 コンボボックスのインスタンス生成
 	ChoiceFacility	choiceFacility;								// @1 教室選択用コンボボックス
 	// テキストフィールドのインスタンス生成
@@ -45,6 +46,7 @@ public class MainFrame extends Frame implements ActionListener, WindowListener{
 		buttonReservation = new Button( "新規予約");			// @2 新規予約ボタン
 		buttonConfirm	= new Button("教室予約状況確認");		// @3 教室予約状況確認
 		buttonSelfConfirm = new Button( "自己予約確認");		// @4 自己予約確認ボタン
+		buttonReservationCancel = new Button("予約キャンセル"); //@5予約キャンセルボタン
 		// @1
 		// @1 教室選択用コンボボックスの生成
 		List<String> facilityId = new ArrayList<String>();		// @1 全てのfacilityIDを入れるリスト
@@ -100,6 +102,7 @@ public class MainFrame extends Frame implements ActionListener, WindowListener{
 		panelSouth = new Panel();								// @2下部パネルインスタンスを生成
 		panelSouth.add( buttonReservation);						// @2 新規予約ボタンを付加
 		panelSouth.add( buttonSelfConfirm);						// @4 自己予約確認ボタン
+		panelSouth.add(buttonReservationCancel);				// @5予約キャンセルボタン
 		// @2 MainFrameに下部パネルを追加
 		add( panelSouth, BorderLayout.SOUTH);
 		
@@ -109,6 +112,7 @@ public class MainFrame extends Frame implements ActionListener, WindowListener{
 		buttonReservation.addActionListener( this);				// @2 ActionListenerに新規予約ボタンを追加
 		buttonConfirm.addActionListener(this);					// @3ActionListenerにButtonConfirmを追加
 		buttonSelfConfirm.addActionListener( this);				// @4
+		buttonReservationCancel.addActionListener(this);		//@5
 		addWindowListener( this);								// WindowListenerを追加
 	}
 
@@ -169,7 +173,9 @@ public class MainFrame extends Frame implements ActionListener, WindowListener{
 		} else if( e.getSource() == buttonConfirm) {			// @3
 			result = reservationControl.makeConfirm( this);		// @3
 		} else if( e.getSource() == buttonSelfConfirm) {		// @4
-			result = reservationControl.getSelfConfirm( this);	// @4
+			result = reservationControl.getSelfConfirm( this);	// @5
+		} else if( e.getSource() == buttonReservationCancel) {	// @5
+			result = reservationControl.getSelfConfirm( this);
 		}
 		textMessage.setText( result);							// メソッドの戻り値をテキストエリアに表示
 	}
