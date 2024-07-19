@@ -336,7 +336,7 @@ public class ReservationControl {
 		String	rday_str	= cd.tfDay.getText();								// @3 選択された日情報をテキストで取得
 		
 
-			// @2 月と日が一桁だったら，前に0を付加
+			// @3 月と日が一桁だったら，前に0を付加
 		if( rmonth_str.length() == 1) {											// @3 月の文字数が1桁の時
 				rmonth_str = "0" + rmonth_str;									// @3 　月の先頭に"0"を付加
 		}																		// @3
@@ -380,8 +380,8 @@ public class ReservationControl {
 				rday_str = "0" + rday_str;							// @3
 			}														// @3
 			// @3 reservationテーブルより，入力日の予約情報を取得する
-			String	rdate = ryear_str + "-" + rmonth_str + "-" + rday_str;			// @2
-			// @2 指定教室の新規予約日の予約情報を取得するクエリ作成			
+			String	rdate = ryear_str + "-" + rmonth_str + "-" + rday_str;			// @3
+			// @3 指定教室の新規予約日の予約情報を取得するクエリ作成			
 				
 			try {															// @1
 					String	sql = "SELECT * FROM db_reservation.reservation WHERE facility_id = '" + facility + "' AND day = '" + rdate + "';";	// @3
@@ -454,5 +454,100 @@ public class ReservationControl {
 	    }
 
 	    return result.toString();
-	}													
+	}	
+	//// @5 予約キャンセルボタン押下時の処理を行うメソッド
+	public	String	makeReservationCancel( MainFrame frame) {								
+		// @3 結果を入れる戻り値変数を初期化（Nullを結果）
+		List<String> res = new ArrayList<>();
+											
+		// @5予約キャンセル画面生成
+		ReservationCancelDialog rcd = new ReservationCancelDialog( frame, this);
+		rcd.setVisible(true); // @5
+		
+	    if (rcd.canceled) {
+	    	return String.join("\n", res);	    
+	    }
+	    
+		// @5 正常実行したとき
+		// @5 予約キャンセル画面から予約IDを取得
+		String	reservation_ID	= cd.tfYear.getText();								// @3 入力された年情報をテキストで取得
+
+		
+
+			// @3 月と日が一桁だったら，前に0を付加
+		if( rmonth_str.length() == 1) {											// @3 月の文字数が1桁の時
+				rmonth_str = "0" + rmonth_str;									// @3 　月の先頭に"0"を付加
+		}																		// @3
+		if( rday_str.length() == 1) {											// @3 日の文字数が1桁の時
+				rday_str = "0" + rday_str;										// @3 　日の先頭に"0"を付加
+		}																		// @3																			// @2
+			// @3 入力された日付が正しいか，以下2点をチェック
+			// @3   入力された文字が半角数字になっているか．
+			// @3   日付として成立している値か
+		try {																	// @3
+			DateFormat	sd = new SimpleDateFormat( "yyyy-MM-dd");				// @3 日付のフォーマットを定義
+			sd.setLenient( false);												// @3 日付フォーマットのチェックを厳格化
+			// @2 入力された日付を文字列に変換したものと，SimpleDateFormatに当てはめて同じ値になるかをチェック
+			String	inData = ryear_str + "-" + rmonth_str + "-" + rday_str;		// @3 入力日付を文字列形式でyyyy-MM-dd形式に合成			
+			String	convData = sd.format( sd.parse( inData));					// @3 入力日付をSimpleDateFormat形式に変換
+			if( !inData.equals( convData)) {									// @3 2つの文字列が等しくない時．
+				res.add("日付の書式を修正して下さい（年：西暦4桁，月：1～12，日：1～31(各月月末まで))");	// @3 エラー文を設定し，新規予約終了
+				return	String.join("\n", res);													// @3
+			}																	// @3
+		} catch( ParseException p) {											// @3 年月日の文字が誤っていてSimpleDateFormatに変換不可の時
+				res.add("日付の値を修正して下さい");									// @3 数字以外，入力されていないことを想定したエラー処理
+				return	String.join("\n", res);														// @3
+			}																		// @3
+																					// @3
+		// @3 入力された日付が現時点より後であるかのチェック
+		Calendar	dateReservation = Calendar.getInstance();					// @3 
+		// @3 入力された日付及び現在の日付をCalendarクラスの情報として持つ
+		dateReservation.set( Integer.parseInt( ryear_str), Integer.parseInt( rmonth_str)-1, Integer.parseInt( rday_str));	//@2
+		Calendar	dateNow = Calendar.getInstance();							// @3 現在日時を取得
+																				// @3
+		// @3 翌日以降の予約の時
+		if( dateReservation.after( dateNow)) {									// @3
+			String	facility	= cd.choiceFacility.getSelectedItem();			// @3
+			// @3 指定された教室に予約があるかどうかのチェック
+			connectDB();											// @2 MySQLに接続
+			// @3 月日が1桁なら前に0を付ける			
+			if( rmonth_str.length() == 1) {							// @3
+				rmonth_str = "0" + rmonth_str;						// @3
+			}														// @3
+			if( rday_str.length() == 1) {							// @3
+				rday_str = "0" + rday_str;							// @3
+			}														// @3
+			// @3 reservationテーブルより，入力日の予約情報を取得する
+			String	rdate = ryear_str + "-" + rmonth_str + "-" + rday_str;			// @3
+			// @3 指定教室の新規予約日の予約情報を取得するクエリ作成			
+				
+			try {															// @1
+					String	sql = "SELECT * FROM db_reservation.reservation WHERE facility_id = '" + facility + "' AND day = '" + rdate + "';";	// @3
+					System.out.println( sql);				// @@@@ デバッグ用SQLをコンソールに表示
+					ResultSet	rs = sqlStmt.executeQuery( sql);				// @1 選択された教室IDと同じレコードを抽出
+					String	classroomName = "教室"+facility+"\n";  //@3教室名を取得
+
+					res.add(classroomName);
+					while( rs.next()) {											// @1 1件目のレコードを取得
+						String reservationInfo =  (rs.getString("start_time")).substring( 0,5) + "~ " + (rs.getString("end_time")).substring( 0,5);
+						res.add(reservationInfo);
+					}
+				// @3 教室名だけが追加された場合
+				if(res.size() == 1) {
+					res.clear();
+					res.add("予約はありません．");
+				}															// @3
+			} catch( Exception e) {											// @3 例外発生時
+					e.printStackTrace();									// @3 StackTraceをコンソールに表示
+			}																// @3
+			closeDB();														// @3 MySQLとの接続を切る	
+			// @3 予約日が当日かそれより前だった場合
+		}else {
+			res.add("入力日時が無効です");
+			return String.join("\n", res);
+		}									
+		return String.join("\n", res);	// @3
+	}
 }
+
+
