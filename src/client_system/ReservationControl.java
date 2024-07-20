@@ -1,9 +1,10 @@
-package reservation_system;
+package client_system;
 
 import java.awt.Dialog;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;											// @2
 import java.text.ParseException;										// @2
@@ -11,6 +12,8 @@ import java.text.SimpleDateFormat;										// @2
 import	java.util.ArrayList;											// @1
 import java.util.Calendar;												// @2
 import	java.util.List;													// @1
+import java.util.regex.Matcher;
+import java.util.regex.Pattern; 										
 
 public class ReservationControl {
 	// MySQLに接続するためのデータ
@@ -89,10 +92,10 @@ public class ReservationControl {
 						frame.buttonLog.setLabel( "ログアウト");		// ログインボタンの表示をログアウトに変更
 						frame.tfLoginID.setText( reservationUserID);	// ログインユーザIDにログイン済みのIDを表示
 					} else {											// パスワードが正しくない時
-						res = "IDまたはパスワードが違います．";			// 結果表示エリアに表示するメッセージをセット
+						res = "IDまたはパスワードが違います。";			// 結果表示エリアに表示するメッセージをセット
 					}
 				} else {												// 非登録ユーザの時
-					res = "IDが違います．";								// 結果表示エリアに表示するメッセージをセット
+					res = "IDが違います。";								// 結果表示エリアに表示するメッセージをセット
 				}
 			} catch( Exception e) {										// 例外発生時
 				e.printStackTrace();									// StackTraceを表示
@@ -119,7 +122,7 @@ public class ReservationControl {
 				// @1 教室概要データの作成
 				res = exp + "　利用可能時間：" + openTime.substring( 0,5) + "～" + closeTime.substring( 0,5);	// @1
 			} else {													// @1 該当するレコードが無い場合
-				res = "教室番号が違います．";							// @1 結果表示エリアに表示する文言をセット
+				res = "教室番号が違います。";							// @1 結果表示エリアに表示する文言をセット
 			}															// @1
 		} catch( Exception e) {											// @1 例外発生時
 			e.printStackTrace();										// @1 StackTraceをコンソールに表示
@@ -185,7 +188,7 @@ public class ReservationControl {
 					return	res;													// @2
 				}																	// @2
 			} catch( ParseException p) {											// @2 年月日の文字が誤っていてSimpleDateFormatに変換不可の時
-				res = "日付の値を修正して下さい";									// @2 数字以外，入力されていないことを想定したエラー処理
+				res = "日付の値を修正して下さい。";									// @2 数字以外，入力されていないことを想定したエラー処理
 				return	res;														// @2
 			}																		// @2
 																					// @2
@@ -204,7 +207,7 @@ public class ReservationControl {
 																					// @2
 				// @2 開始時刻と終了時刻が同じ時
 				if( st.compareTo( et) >= 0) {										// @2
-					res	= "開始時刻と終了時刻が同じか終了時刻の方が早くなっています";// @2
+					res	= "開始時刻と終了時刻が同じか終了時刻の方が早くなっています。";// @2
 				} else {															// @2
 					// @2 開始時刻と終了時刻は同じではない時
 					try{															// @2
@@ -269,10 +272,10 @@ public class ReservationControl {
 										+ facility + "','" + reservationUserID + "','" + now + "','" + rdate + "','" + st + "','" + et + "');";
 								System.out.println( sql);				// @@@@2 デバッグ用SQLをコンソールに表示
 								sqlStmt.executeUpdate( sql);						// @2 SQL文をMySQLに投げる
-								res = "予約されました";								// @2
+								res = "予約されました。";								// @2
 							// @2 登録されている予約情報と重なりがある場合
 							} else {												// @2
-								res = "既にある予約に重なっています";				// @2
+								res = "既にある予約に重なっています。";				// @2
 							}														// @2
 						}															// @2
 					// @2 途中で予期しない例外が発生した場合
@@ -284,11 +287,11 @@ public class ReservationControl {
 				}																	// @2
 			// @2 予約日が当日かそれより前だった場合
 			} else {																// @2
-				res = "予約日が無効です";											// @2
+				res = "予約日が無効です。";											// @2
 			}																		// @2
 		// @2 未ログイン状態の場合
 		} else {																	// @2
-			res = "ログインして下さい";												// @2
+			res = "ログインして下さい。";												// @2
 		}																			// @2
 		return res;																	// @2
 	}																				// @2
@@ -336,7 +339,7 @@ public class ReservationControl {
 		String	rday_str	= cd.tfDay.getText();								// @3 選択された日情報をテキストで取得
 		
 
-			// @2 月と日が一桁だったら，前に0を付加
+			// @3 月と日が一桁だったら，前に0を付加
 		if( rmonth_str.length() == 1) {											// @3 月の文字数が1桁の時
 				rmonth_str = "0" + rmonth_str;									// @3 　月の先頭に"0"を付加
 		}																		// @3
@@ -357,7 +360,7 @@ public class ReservationControl {
 				return	String.join("\n", res);													// @3
 			}																	// @3
 		} catch( ParseException p) {											// @3 年月日の文字が誤っていてSimpleDateFormatに変換不可の時
-				res.add("日付の値を修正して下さい");									// @3 数字以外，入力されていないことを想定したエラー処理
+				res.add("日付の値を修正して下さい。");									// @3 数字以外，入力されていないことを想定したエラー処理
 				return	String.join("\n", res);														// @3
 			}																		// @3
 																					// @3
@@ -380,24 +383,24 @@ public class ReservationControl {
 				rday_str = "0" + rday_str;							// @3
 			}														// @3
 			// @3 reservationテーブルより，入力日の予約情報を取得する
-			String	rdate = ryear_str + "-" + rmonth_str + "-" + rday_str;			// @2
-			// @2 指定教室の新規予約日の予約情報を取得するクエリ作成			
+			String	rdate = ryear_str + "-" + rmonth_str + "-" + rday_str;			// @3
+			// @3 指定教室の新規予約日の予約情報を取得するクエリ作成			
 				
 			try {															// @1
 					String	sql = "SELECT * FROM db_reservation.reservation WHERE facility_id = '" + facility + "' AND day = '" + rdate + "';";	// @3
 					System.out.println( sql);				// @@@@ デバッグ用SQLをコンソールに表示
-					ResultSet	rs = sqlStmt.executeQuery( sql);				// @1 選択された教室IDと同じレコードを抽出
+					ResultSet	rs = sqlStmt.executeQuery( sql);				// 選択された教室IDと同じレコードを抽出
 					String	classroomName = "教室"+facility+"\n";  //@3教室名を取得
 
 					res.add(classroomName);
-					while( rs.next()) {											// @1 1件目のレコードを取得
+					while( rs.next()) {											// @レコードを取得
 						String reservationInfo =  (rs.getString("start_time")).substring( 0,5) + "~ " + (rs.getString("end_time")).substring( 0,5);
 						res.add(reservationInfo);
 					}
 				// @3 教室名だけが追加された場合
 				if(res.size() == 1) {
 					res.clear();
-					res.add("予約はありません．");
+					res.add("予約はありません。");
 				}															// @3
 			} catch( Exception e) {											// @3 例外発生時
 					e.printStackTrace();									// @3 StackTraceをコンソールに表示
@@ -405,7 +408,7 @@ public class ReservationControl {
 			closeDB();														// @3 MySQLとの接続を切る	
 			// @3 予約日が当日かそれより前だった場合
 		}else {
-			res.add("入力日時が無効です");
+			res.add("入力日時が無効です。");
 			return String.join("\n", res);
 		}									
 		return String.join("\n", res);	// @3
@@ -438,10 +441,10 @@ public class ReservationControl {
 					String reservationInfo = facility +"  "+ "予約日："+ day +"  "+"予約時間："+ startTime.substring( 0,5) + " ～ " + endTime.substring( 0,5) +"  "+"ID："+ reservationId; 
 					resList.add(reservationInfo);							// @4 リストに予約データ(str)格納
 				} if (resList.isEmpty()) {                                  // @4 予約がない場合のエラー処理
-	                resList.add("予約はありません");
+	                resList.add("予約はありません。");
 	            }
 			}else {															// @4 未ログイン状態のエラー処理
-				resList.add("ログインして下さい");
+				resList.add("ログインして下さい。");
 			}
 		}catch( Exception e){												// @4 例外発生時のエラー処理
 			e.printStackTrace();
@@ -454,5 +457,74 @@ public class ReservationControl {
 	    }
 
 	    return result.toString();
-	}													
+	}	
+	//// @5 予約キャンセルボタン押下時の処理を行うメソッド
+	public	String	makeReservationCancel( MainFrame frame){								
+		List<String> res = new ArrayList<>();
+		String reservationId = "";
+		//@5ログイン済みの場合
+		if( flagLogin) {
+			// @5予約キャンセル画面生成
+			ReservationCancelDialog rcd = new ReservationCancelDialog( frame, this);
+	        
+			rcd.setVisible(true); // @5
+		
+			if (rcd.canceled) {
+			    return String.join("\n", res);	    
+			}
+
+			// @5正常実行したとき
+			// @5予約キャンセル画面から予約IDを取得
+			String reservationID_str = rcd.tfReservationID.getText(); // @5入力されたID情報をテキストで取得
+
+			// @5正規表現パターンを用意する
+			String regex_num = "^[0-9]+$";
+			Pattern p1 = Pattern.compile(regex_num); // @5正規表現パターンの読み込み
+			Matcher m1 = p1.matcher(reservationID_str); // @5パターンと検査対象文字列の照合
+			boolean result1 = m1.matches(); // @5照合結果をtrueまたはfalseで取得する
+
+			if (!result1) {
+			    res.add("IDを数字で入力してください。");
+			    return String.join("\n", res);	
+			} else {
+			    // @5予約IDが正しく入力されているとき
+			    try {
+			        connectDB(); // @5MySQLに接続
+			        String sql = "SELECT reservation_id FROM db_reservation.reservation WHERE user_id = '" + reservationUserID + "'";
+					ResultSet	rs = sqlStmt.executeQuery( sql);
+					System.out.println( sql);
+			        boolean found = false;
+			        while (rs.next()) {
+			            reservationId = rs.getString("reservation_id");
+			            if (reservationId.equals(reservationID_str)) {
+			                found = true;
+			                break;
+			            }
+			        }
+
+			        if (!found) {
+			            res.add("IDの値が正しくありません。");
+			        } else {
+			        	sql = "DELETE FROM db_reservation.reservation WHERE reservation_id = '"+reservationId +"'AND user_id ='"+ reservationUserID + "'";
+						System.out.println( sql);				// @5デバッグ用SQLをコンソールに表示
+						sqlStmt.executeUpdate( sql);			// @5 SQL文をMySQLに投げる
+						res.add("予約がキャンセルされました。");
+						return String.join("\n", res);
+			        }
+			    } catch (SQLException e) {
+			        e.printStackTrace();
+			        res.add("予期しないエラーが発生しました。");
+			    } finally {
+			        closeDB(); // MySQLとの接続を切る
+			    }
+
+			}
+		}else { //未ログインのとき
+			res.add("ログインしてください。");
+		}
+		return String.join("\n", res);	// @3
+	}
+		
 }
+
+
