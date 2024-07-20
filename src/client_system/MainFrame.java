@@ -102,7 +102,7 @@ public class MainFrame extends Frame implements ActionListener, WindowListener{
 		panelSouth = new Panel();								// @2下部パネルインスタンスを生成
 		panelSouth.add( buttonReservation);						// @2 新規予約ボタンを付加
 		panelSouth.add( buttonSelfConfirm);						// @4 自己予約確認ボタン
-		panelSouth.add(buttonReservationCancel);				// @5予約キャンセルボタン
+		panelSouth.add( buttonReservationCancel );				// @5予約キャンセルボタン
 		// @2 MainFrameに下部パネルを追加
 		add( panelSouth, BorderLayout.SOUTH);
 		
@@ -175,7 +175,7 @@ public class MainFrame extends Frame implements ActionListener, WindowListener{
 		} else if( e.getSource() == buttonSelfConfirm) {		// @4
 			result = reservationControl.getSelfConfirm( this);	// @5
 		} else if( e.getSource() == buttonReservationCancel) {	// @5
-			result = reservationControl.getSelfConfirm( this);
+			result = reservationControl.makeReservationCancel(this);
 		}
 		textMessage.setText( result);							// メソッドの戻り値をテキストエリアに表示
 	}

@@ -38,8 +38,8 @@ public class ReservationCancelDialog extends Dialog implements ActionListener, W
 		// 初期値キャンセルを設定
 		canceled = true;
 		
-		// テキストフィールドの生成（年月日）
-		tfReservationID		= new TextField("", 4);
+		// テキストフィールドの生成（予約ID）
+		tfReservationID		= new TextField(""); 
 
 		
 		// ボタンの生成
@@ -56,7 +56,6 @@ public class ReservationCancelDialog extends Dialog implements ActionListener, W
 		panelSouth.add( new Label("   "));
 		panelSouth.add( buttonOK);
 		
-		// ReservationDialogをBorderLayoutに設定し，3つのパネルを追加
 		setLayout( new BorderLayout());
 		add( panelCenter,	BorderLayout.CENTER);
 		add( panelSouth,	BorderLayout.SOUTH);
